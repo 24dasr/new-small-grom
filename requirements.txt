@@ -1,0 +1,9 @@
+chromadb==1.5.9
+rich==14.3.3
+requests==2.32.4
+beautifulsoup4==4.13.4
+html2text==2025.4.15
+python-dotenv==1.2.2
+tiktoken==0.13.0
+prompt_toolkit==3.0.52
+

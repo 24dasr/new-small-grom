@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+
+# Auto-generated data (created by ingest.py)
+docs/
+scrape_cache/
+chroma_db/
+embeddings_cache.pkl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
