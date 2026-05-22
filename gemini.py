@@ -127,7 +127,7 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
     )
 
     results: List[Optional[List[float]]] = [None] * len(texts)
-    batch_size = 5
+    batch_size = 3
 
     for batch_idx in range(0, len(texts), batch_size):
         batch_texts = texts[batch_idx : batch_idx + batch_size]
