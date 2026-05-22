@@ -127,7 +127,7 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
     )
 
     results: List[Optional[List[float]]] = [None] * len(texts)
-    batch_size = 20
+    batch_size = 10
 
     for batch_idx in range(0, len(texts), batch_size):
         batch_texts = texts[batch_idx : batch_idx + batch_size]
@@ -148,7 +148,7 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
             try:
                 rate_limiter.wait_if_needed()
                 resp = requests.post(
-                    url, json=payload, timeout=REQUEST_TIMEOUT
+                    url, json=payload, timeout=60
                 )
                 rate_limiter.record_call()
 
