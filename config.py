@@ -31,7 +31,8 @@ CHUNK_OVERLAP: int = 30        # token overlap between chunks
 TOP_K: int = 3                 # number of retrieved chunks
 SIMILARITY_THRESHOLD: float = 0.75  # cosine similarity floor
 MAX_HISTORY: int = 4           # conversation turns to keep
-VERBOSE: bool = False  # set True to see detailed API warnings
+PROMPT_BUDGET: int = 3000      # hard token budget for assembled prompt
+VERBOSE: bool = False          # set True to see detailed API warnings
 
 # ─── Reliability ──────────────────────────────────────────────────────────────
 MAX_RETRIES: int = 3
@@ -40,7 +41,7 @@ REQUEST_TIMEOUT: int = 15      # seconds for all HTTP requests
 CACHE_MAX_AGE_DAYS: int = 7    # scrape cache expiry
 
 # ─── Backoff Schedule (seconds) ──────────────────────────────────────────────
-BACKOFF_SCHEDULE: Tuple[int, ...] = (30, 60, 120, 240)
+BACKOFF_SCHEDULE: Tuple[int, ...] = (10, 20, 40)
 
 # ─── Target GROMACS Documentation URLs ────────────────────────────────────────
 SCRAPE_URLS: Dict[str, str] = {
@@ -97,7 +98,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 30.0  # minimum seconds between calls
+        self._min_interval: float = 5.0  # ~12 req/min, safely under 15 RPM
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""
