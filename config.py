@@ -26,7 +26,7 @@ EMBEDDING_MODEL: str = "gemini-embedding-001"
 GEMINI_API_BASE: str = "https://generativelanguage.googleapis.com/v1beta"
 
 # ─── RAG Parameters ──────────────────────────────────────────────────────────
-CHUNK_SIZE: int = 300          # tokens per chunk
+CHUNK_SIZE: int = 150          # tokens per chunk
 CHUNK_OVERLAP: int = 30        # token overlap between chunks
 TOP_K: int = 3                 # number of retrieved chunks
 SIMILARITY_THRESHOLD: float = 0.75  # cosine similarity floor
@@ -97,7 +97,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 4.0  # minimum seconds between calls
+        self._min_interval: float = 6.0  # minimum seconds between calls
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""
