@@ -23,8 +23,8 @@ The knowledge base is scraped directly from the **official GROMACS documentation
 ## Quick Start
 
 ```bash
-git clone https://github.com/username/gromacs-agent
-cd gromacs-agent
+git clone https://github.com/24dasr/new-small-grom
+cd new-small-grom
 pip install -r requirements.txt
 python setup.py        # first-run wizard: API key + validation
 python ingest.py       # scrape docs + build vector DB (run once)
@@ -71,7 +71,7 @@ python agent.py        # start the chatbot
 ## Project Structure
 
 ```
-gromacs-agent/
+new-small-grom/
 ├── setup.py                # First-run wizard: API key + system checks
 ├── agent.py                # Main chat loop with commands
 ├── ingest.py               # Orchestrates scraping + embedding
