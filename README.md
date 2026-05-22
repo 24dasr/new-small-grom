@@ -8,7 +8,7 @@ The knowledge base is scraped directly from the **official GROMACS documentation
 
 - 🔍 **RAG-powered** — retrieves relevant docs before every response
 - ⚡ **Gemini Flash** — fast, free-tier generation with streaming output
-- 📚 **11 official doc pages** scraped and indexed automatically
+- 📚 **11 official doc pages** scraped and indexed automatically (GROMACS 2024.6)
 - 💾 **Smart caching** — scrape cache (7-day) + embedding cache (hash-based)
 - 🎨 **Rich terminal UI** — spinners, progress bars, ASCII banner
 - 🛡️ **Robust error handling** — retries, circuit breaker, graceful degradation
@@ -46,7 +46,7 @@ python agent.py        # start the chatbot
 │                    (300 tokens, 30 overlap)                      │
 │                             │                                   │
 │                             ▼                                   │
-│                    text-embedding-004 ──► ChromaDB               │
+│                  gemini-embedding-001 ──► ChromaDB               │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐

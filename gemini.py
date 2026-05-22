@@ -44,7 +44,7 @@ def _get_api_key() -> str:
 
 
 def embed_text(text: str) -> Optional[List[float]]:
-    """Embed a text string using the Gemini text-embedding-004 model.
+    """Embed a text string using the Gemini gemini-embedding-001 model.
 
     Args:
         text: The text to embed.
@@ -109,7 +109,7 @@ def embed_text(text: str) -> Optional[List[float]]:
 
 
 def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
-    """Embed a batch of texts sequentially.
+    """Embed a batch of texts using Gemini's batchEmbedContents endpoint.
 
     Args:
         texts: List of text strings to embed.
@@ -117,9 +117,83 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
     Returns:
         List of embedding vectors (or None for failures).
     """
-    results: List[Optional[List[float]]] = []
-    for text in texts:
-        results.append(embed_text(text))
+    if not texts:
+        return []
+
+    api_key = _get_api_key()
+    url = (
+        f"{GEMINI_API_BASE}/models/{EMBEDDING_MODEL}:batchEmbedContents"
+        f"?key={api_key}"
+    )
+
+    results: List[Optional[List[float]]] = [None] * len(texts)
+    batch_size = 20
+
+    for batch_idx in range(0, len(texts), batch_size):
+        batch_texts = texts[batch_idx : batch_idx + batch_size]
+        payload = {
+            "requests": [
+                {
+                    "model": f"models/{EMBEDDING_MODEL}",
+                    "content": {
+                        "parts": [{"text": t}]
+                    }
+                }
+                for t in batch_texts
+            ]
+        }
+
+        batch_success = False
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                rate_limiter.wait_if_needed()
+                resp = requests.post(
+                    url, json=payload, timeout=REQUEST_TIMEOUT
+                )
+                rate_limiter.record_call()
+
+                if resp.status_code == 200:
+                    data = resp.json()
+                    embeddings_data = data.get("embeddings", [])
+                    for i, emb_item in enumerate(embeddings_data):
+                        results[batch_idx + i] = emb_item.get("values")
+                    batch_success = True
+                    break
+
+                if resp.status_code == 429:
+                    wait = BACKOFF_SCHEDULE[min(attempt - 1,
+                                                 len(BACKOFF_SCHEDULE) - 1)]
+                    show_rate_limit(attempt, MAX_RETRIES, wait)
+                    time.sleep(wait)
+                    continue
+
+                if resp.status_code == 401:
+                    show_error("Invalid API key (401). Run: python setup.py")
+                    return results
+
+                if resp.status_code in (500, 503):
+                    if attempt == 1:
+                        time.sleep(3)
+                        continue
+                    show_error(f"Server error ({resp.status_code}).")
+                    break
+
+                show_error(f"Batch embedding failed: HTTP {resp.status_code}")
+                break
+
+            except requests.exceptions.Timeout:
+                if attempt == 1:
+                    time.sleep(3)
+                    continue
+                show_error("Batch embedding request timed out.")
+                break
+            except Exception as e:
+                show_error(f"Batch embedding network error: {e}")
+                break
+
+        if not batch_success:
+            pass
+
     return results
 
 

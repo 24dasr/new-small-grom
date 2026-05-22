@@ -20,7 +20,7 @@ ENV_FILE: Path = BASE_DIR / ".env"
 
 # ─── Model Configuration ─────────────────────────────────────────────────────
 GENERATION_MODEL: str = "gemini-2.0-flash-lite"
-EMBEDDING_MODEL: str = "text-embedding-004"
+EMBEDDING_MODEL: str = "gemini-embedding-001"
 
 # ─── Gemini API Base URL ─────────────────────────────────────────────────────
 GEMINI_API_BASE: str = "https://generativelanguage.googleapis.com/v1beta"
@@ -45,27 +45,27 @@ BACKOFF_SCHEDULE: Tuple[int, ...] = (5, 10, 20)
 # ─── Target GROMACS Documentation URLs ────────────────────────────────────────
 SCRAPE_URLS: Dict[str, str] = {
     "mdp_options":
-        "https://manual.gromacs.org/current/user-guide/mdp-options.html",
+        "https://manual.gromacs.org/2024.6/user-guide/mdp-options.html",
     "mdrun_performance":
-        "https://manual.gromacs.org/current/user-guide/mdrun-performance.html",
+        "https://manual.gromacs.org/2024.6/user-guide/mdrun-performance.html",
     "getting_started":
-        "https://manual.gromacs.org/current/user-guide/getting-started.html",
+        "https://manual.gromacs.org/2024.6/user-guide/getting-started.html",
     "system_preparation":
-        "https://manual.gromacs.org/current/user-guide/system-preparation.html",
+        "https://manual.gromacs.org/2024.6/user-guide/system-preparation.html",
     "force_fields":
-        "https://manual.gromacs.org/current/user-guide/force-fields.html",
+        "https://manual.gromacs.org/2024.6/user-guide/force-fields.html",
     "molecular_dynamics":
-        "https://manual.gromacs.org/current/reference-manual/algorithms/molecular-dynamics.html",
+        "https://manual.gromacs.org/2024.6/reference-manual/algorithms/molecular-dynamics.html",
     "analysis_tools":
-        "https://manual.gromacs.org/current/reference-manual/analysis.html",
+        "https://manual.gromacs.org/2024.6/reference-manual/analysis.html",
     "fep":
-        "https://manual.gromacs.org/current/reference-manual/free-energy-implementation.html",
+        "https://manual.gromacs.org/2024.6/reference-manual/special-topics/free-energy-implementation.html",
     "gmx_commands":
-        "https://manual.gromacs.org/current/onlinehelp/gmx.html",
+        "https://manual.gromacs.org/2024.6/onlinehelp/gmx.html",
     "water_models":
-        "https://manual.gromacs.org/current/reference-manual/topologies/water-models.html",
+        "https://manual.gromacs.org/2024.6/reference-manual/topologies/water-models.html",
     "error_messages":
-        "https://manual.gromacs.org/current/user-guide/known-issues.html",
+        "https://manual.gromacs.org/2024.6/user-guide/known-issues.html",
 }
 
 # ─── Slash Commands ──────────────────────────────────────────────────────────
@@ -97,7 +97,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 0.5  # minimum seconds between calls
+        self._min_interval: float = 4.0  # minimum seconds between calls
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""

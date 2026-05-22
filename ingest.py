@@ -2,7 +2,7 @@
 ingest.py — Orchestrates scraping GROMACS docs and embedding into ChromaDB.
 
 Phase 1: Scrape official GROMACS documentation → save as markdown to docs/
-Phase 2: Chunk docs/ → embed with text-embedding-004 → store in ChromaDB
+Phase 2: Chunk docs/ → embed with gemini-embedding-001 → store in ChromaDB
 
 Run once before using agent.py. Re-running is safe (caches prevent re-work).
 """
@@ -35,7 +35,7 @@ from display import (
     show_warning,
     step_status,
 )
-from gemini import embed_text
+from gemini import embed_text, embed_texts_batch
 from scraper import scrape_all_pages
 
 # Tiktoken encoder for chunking
@@ -161,7 +161,7 @@ def run_ingest() -> None:
 
     # ── Step 2: Scrape documentation ─────────────────────────────────────
     step_status("2", "6",
-                f"Scraping GROMACS documentation ({len(scrape_all_pages.__code__.co_varnames)} pages)...",
+                f"Scraping GROMACS documentation...",
                 "...", "info")
     console.print()
     scrape_results = scrape_all_pages()
@@ -227,14 +227,17 @@ def run_ingest() -> None:
     new_embeddings: Dict[str, Dict[str, Any]] = {}  # file_hash → data
 
     if all_chunks:
+        # Extract all chunk texts to send in batch
+        chunk_texts = [c[0] for c in all_chunks]
+        embeddings = embed_texts_batch(chunk_texts)
+
         progress = create_progress()
         with progress:
             task = progress.add_task(
                 "  Embedding chunks", total=len(all_chunks)
             )
 
-            for chunk_text, source_name, chunk_id in all_chunks:
-                embedding = embed_text(chunk_text)
+            for (chunk_text, source_name, chunk_id), embedding in zip(all_chunks, embeddings):
                 if embedding is not None:
                     # Group by source file for cache
                     md_file = DOCS_DIR / source_name
