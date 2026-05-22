@@ -31,7 +31,7 @@ CHUNK_OVERLAP: int = 30        # token overlap between chunks
 TOP_K: int = 3                 # number of retrieved chunks
 SIMILARITY_THRESHOLD: float = 0.75  # cosine similarity floor
 MAX_HISTORY: int = 4           # conversation turns to keep
-PROMPT_BUDGET: int = 3000      # hard token budget for assembled prompt
+VERBOSE: bool = False  # set True to see detailed API warnings
 
 # ─── Reliability ──────────────────────────────────────────────────────────────
 MAX_RETRIES: int = 3
