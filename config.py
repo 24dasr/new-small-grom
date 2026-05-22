@@ -94,11 +94,11 @@ Rules you MUST follow:
 
 
 class RateLimiter:
-    """Simple rate limiter with exponential backoff for Gemini API calls."""
+    """Simple rate limiter for Gemini API calls."""
 
-    def __init__(self) -> None:
+    def __init__(self, min_interval: float) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 5.0  # ~12 req/min, safely under 15 RPM
+        self._min_interval: float = min_interval
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""
@@ -112,5 +112,11 @@ class RateLimiter:
         self._last_call = time.time()
 
 
-# Global rate limiter instance
-rate_limiter = RateLimiter()
+# Embedding model: 100 RPM free tier → 1 request every ~0.7 s (use 1.0 s to be safe)
+embedding_rate_limiter = RateLimiter(min_interval=1.0)
+
+# Generation model: 15 RPM free tier → 1 request every ~4.5 s (use 5.0 s to be safe)
+generation_rate_limiter = RateLimiter(min_interval=5.0)
+
+# Backwards-compatible alias (used by any code that still imports `rate_limiter`)
+rate_limiter = generation_rate_limiter

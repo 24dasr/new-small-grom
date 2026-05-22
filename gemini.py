@@ -20,7 +20,8 @@ from config import (
     GENERATION_MODEL,
     MAX_RETRIES,
     REQUEST_TIMEOUT,
-    rate_limiter,
+    embedding_rate_limiter,
+    generation_rate_limiter,
 )
 from display import show_error, show_rate_limit, show_warning
 
@@ -66,11 +67,11 @@ def embed_text(text: str) -> Optional[List[float]]:
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            rate_limiter.wait_if_needed()
+            embedding_rate_limiter.wait_if_needed()
             resp = requests.post(
                 url, json=payload, timeout=REQUEST_TIMEOUT
             )
-            rate_limiter.record_call()
+            embedding_rate_limiter.record_call()
 
             if resp.status_code == 200:
                 data = resp.json()
@@ -146,11 +147,11 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
         batch_success = False
         for attempt in range(1, MAX_RETRIES + 1):
             try:
-                rate_limiter.wait_if_needed()
+                embedding_rate_limiter.wait_if_needed()
                 resp = requests.post(
                     url, json=payload, timeout=60
                 )
-                rate_limiter.record_call()
+                embedding_rate_limiter.record_call()
                 time.sleep(1)  # brief pause between batches
 
                 if resp.status_code == 200:
@@ -236,11 +237,11 @@ def stream_generate(prompt: str,
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            rate_limiter.wait_if_needed()
+            generation_rate_limiter.wait_if_needed()
             resp = requests.post(
                 url, json=payload, timeout=60, stream=True
             )
-            rate_limiter.record_call()
+            generation_rate_limiter.record_call()
 
             if resp.status_code == 200:
                 for line in resp.iter_lines(decode_unicode=True):
