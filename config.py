@@ -40,7 +40,7 @@ REQUEST_TIMEOUT: int = 15      # seconds for all HTTP requests
 CACHE_MAX_AGE_DAYS: int = 7    # scrape cache expiry
 
 # ─── Backoff Schedule (seconds) ──────────────────────────────────────────────
-BACKOFF_SCHEDULE: Tuple[int, ...] = (20, 40, 80, 160)
+BACKOFF_SCHEDULE: Tuple[int, ...] = (30, 60, 120, 240)
 
 # ─── Target GROMACS Documentation URLs ────────────────────────────────────────
 SCRAPE_URLS: Dict[str, str] = {
@@ -97,7 +97,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 20.0  # minimum seconds between calls
+        self._min_interval: float = 30.0  # minimum seconds between calls
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""
