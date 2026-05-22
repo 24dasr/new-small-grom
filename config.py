@@ -97,7 +97,7 @@ class RateLimiter:
 
     def __init__(self) -> None:
         self._last_call: float = 0.0
-        self._min_interval: float = 6.0  # minimum seconds between calls
+        self._min_interval: float = 8.0  # minimum seconds between calls
 
     def wait_if_needed(self) -> None:
         """Block until the minimum interval has elapsed since the last call."""
