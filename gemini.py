@@ -151,6 +151,7 @@ def embed_texts_batch(texts: List[str]) -> List[Optional[List[float]]]:
                     url, json=payload, timeout=60
                 )
                 rate_limiter.record_call()
+                time.sleep(1)  # brief pause between batches
 
                 if resp.status_code == 200:
                     data = resp.json()
